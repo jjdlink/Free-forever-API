@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>使用教程</title>
+<style>
+:root {
+  --bg: #0a0815;
+  --text: #f4f4f8;
+  --sub: #b0b0c8;
+  --accent: #8b5cf6;
+  --accent2: #06b6d4;
+  --pink: #ec4899;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  min-height: 100vh;
+  font-family: 'SF Pro Display', -apple-system, 'Segoe UI', system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(139,92,246,0.18), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 85% 15%, rgba(6,182,212,0.15), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 50% 90%, rgba(244,63,94,0.12), transparent 60%),
+    var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-x: hidden;
+}
+.container { max-width: 900px; width: 100%; text-align: center; }
+.badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2));
+  border: 1px solid rgba(139,92,246,0.4);
+  color: #c4b5fd;
+  margin-bottom: 16px;
+}
+h1 {
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4, #ec4899);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shift 5s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+@keyframes shift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+.sub { color: var(--sub); font-size: 15px; margin-bottom: 28px; }
+
+.video-frame {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #000;
+  box-shadow: 0 0 80px rgba(139,92,246,0.25), 0 20px 60px rgba(0,0,0,0.6);
+  border: 1px solid rgba(139,92,246,0.3);
+}
+video {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16/9;
+  background: #000;
+}
+.video-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, transparent 40%, rgba(139,92,246,0.06));
+}
+
+/* 播放遮罩：初始覆盖在视频上，点击播放 */
+.play-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: rgba(5,3,15,0.55);
+  backdrop-filter: blur(2px);
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+.play-overlay.hidden { opacity: 0; pointer-events: none; }
+.play-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(139,92,246,0.9), rgba(6,182,212,0.9));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 40px rgba(139,92,246,0.6), 0 0 80px rgba(6,182,212,0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+.play-icon svg { width: 36px; height: 36px; fill: #fff; margin-left: 4px; }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(139,92,246,0.6), 0 0 80px rgba(6,182,212,0.3); }
+  50% { transform: scale(1.06); box-shadow: 0 0 60px rgba(139,92,246,0.8), 0 0 100px rgba(6,182,212,0.4); }
+}
+.play-hint { color: #e9e4ff; font-size: 15px; font-weight: 600; letter-spacing: 2px; }
+
+/* 揭晓后的标题（初始隐藏） */
+.reveal { display: none; }
+.reveal.show { display: block; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* 底部按钮 */
+.actions { display: flex; gap: 12px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+.btn {
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(139,92,246,0.4);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(139,92,246,0.5); }
+.btn-ghost {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--sub);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+/* 真相卡片 */
+.truth-card {
+  margin-top: 28px;
+  padding: 28px 32px;
+  border-radius: 16px;
+  background: rgba(139,92,246,0.08);
+  border: 1px solid rgba(139,92,246,0.3);
+  text-align: left;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+}
+.truth-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 14px;
+  background: linear-gradient(135deg, #ec4899, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.truth-line {
+  font-size: 15px;
+  color: var(--text);
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(139,92,246,0.15);
+}
+.truth-why {
+  margin-top: 14px;
+  font-size: 15px;
+  color: #c4b5fd;
+}
+.truth-share {
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--pink);
+  font-weight: 600;
+}
+.footer { margin-top: 32px; color: rgba(255,255,255,0.3); font-size: 12px; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- 初始状态：中性标题，不剧透 -->
+  <div class="badge">📖 使用指南</div>
+  <h1>使用教程</h1>
+  <p class="sub">点击播放按钮，开始观看</p>
+
+  <!-- 揭晓状态：点击播放后才出现 -->
+  <div class="badge reveal" id="revealBadge">⚠️ 高能预警</div>
+  <h1 class="reveal" id="revealTitle">你被骗了 😈</h1>
+  <p class="sub reveal" id="revealSub">见证真相的时刻</p>
+
+  <div class="video-frame">
+    <video id="player" controls playsinline preload="auto">
+      <source src="https://knvkrgiuheofffgutjjg.supabase.co/storage/v1/object/public/videos/tutorial.mp4" type="video/mp4">
+      你的浏览器不支持视频播放
+    </video>
+
+    <!-- 播放遮罩：点击开始有声播放 -->
+    <div class="play-overlay" id="overlay" onclick="startPlay()">
+      <div class="play-icon">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div class="play-hint">▶ 点击播放</div>
+    </div>
+  </div>
+
+  <!-- 真相卡片：点击播放后才显示 -->
+  <div class="truth reveal" id="revealTruth">
+    <div class="truth-card">
+      <div class="truth-title">这不是真 AI</div>
+      <div class="truth-line">「深度思考」 = 提前写好的过程</div>
+      <div class="truth-line">「回答」 = 随机抽取的段子</div>
+      <div class="truth-line">伪装成 OpenAI 接口，接入即用，并确实可用于codex，但只输出快乐</div>
+      <div class="truth-why">为什么？献给所有想白嫖「无限量免费 API」的人。</div>
+      <div class="truth-share">被骗到了？把它转发给下一位白嫖选手。😈</div>
+    </div>
+  </div>
+
+  <div class="footer">© jjdlink · DEEKSEEP STUDIO</div>
+</div>
+
+<script>
+const player = document.getElementById('player');
+const overlay = document.getElementById('overlay');
+const revealEls = document.querySelectorAll('.reveal');
+
+// 点击播放：显示"你被骗了" + 有声播放
+function startPlay() {
+  // 揭晓
+  revealEls.forEach(el => el.classList.add('show'));
+  document.querySelector('h1:not(.reveal)').style.opacity = '0.3';
+  document.querySelector('.sub:not(.reveal)').style.opacity = '0.3';
+  document.querySelector('.badge:not(.reveal)').style.opacity = '0.3';
+
+  // 有声播放（用户手势触发，浏览器允许有声）
+  player.muted = false;
+  const p = player.play();
+  if (p) p.catch(() => {
+    // 极端情况：仍被拦，静音播放保底
+    player.muted = true;
+    player.play().catch(() => {});
+  });
+
+  // 收起遮罩
+  overlay.classList.add('hidden');
+}
+
+// 视频被暂停时（用户点控制条暂停），恢复遮罩
+player.addEventListener('pause', () => {
+  if (player.ended) return;
+  overlay.classList.remove('hidden');
+});
+player.addEventListener('play', () => {
+  overlay.classList.add('hidden');
+});
+</script>
+</body>
+</html>
